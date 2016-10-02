@@ -3,9 +3,9 @@ from datetime import date, timedelta
 
 
 def get_trending_repositories():
-    d = date.today() - timedelta(days=7)
+    week_ago = date.today() - timedelta(days=7)
     url = 'https://api.github.com/search/repositories?q=created:%3E{}&sort=stars&order=desc'. \
-        format(str(d.isoformat()))
+        format(str(week_ago.isoformat()))
     repositories = requests.get(url).json()
     trending_repos = {}
     for repo in repositories['items'][:20]:
@@ -19,12 +19,11 @@ def get_trending_repositories():
 
 
 if __name__ == '__main__':
-    repos = get_trending_repositories()
     print('Trending repositories about this week.\n')
-    for repo_name, repo in sorted(repos.items(),
+    for repo_name, repo in sorted(get_trending_repositories().items(),
                                   key=lambda repo: repo[1]['stars'],
                                   reverse=True):
-        print('{:-<40} stars: {:-<10} open issues: {:-<5} {}'.format(repo_name,
-                                                                     str(repo['stars']),
-                                                                     str(repo['issues']),
-                                                                     str(repo['repo_url'])))
+        print('stars: {:<5} open issues: {:<3} {} {}'.format(str(repo['stars']),
+                                                             str(repo['issues']),
+                                                             repo_name,
+                                                             str(repo['repo_url'])))
