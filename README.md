@@ -36,4 +36,3 @@ Requirements
 ------------
 
 - Python >= 3.4
-- requests==2.11.1
